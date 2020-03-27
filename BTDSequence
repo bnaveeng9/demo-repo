@@ -1,0 +1,55 @@
+@startuml
+title PPT Party Data and Pricing Sequence
+autonumber
+
+alt BTD Lauched Flow - PPT MerchantInfo 
+    actor SalesRep
+    BTD -> UI_PPT : GET Body with MerchantStructure- \n Simple/Complex
+else PPT SPA lauched by User
+    
+    SalesRep -> UI_PPT #blue
+    UI_PPT-> MerchantOnBoardData : GET getMerchantOnBoardData()
+    note left: what would be the \n GET input request contains? \n A MID/MerchantName/TaxID?
+    database "BTD CRM DB" as BTDDB
+    MerchantOnBoardData -> BTDDB  : retreive MerchantStructure
+    BTDDB --> MerchantOnBoardData : return MerchantStructure
+    MerchantOnBoardData --> UI_PPT : return MerchantStructure
+    note left: returns Simple/Complex \n MerchantStructure?
+
+    MerchantOnBoardData -> BTDDB 
+    UI_PPT --> UI_PPT : Populate Merchant Structure
+    SalesRep --> UI_PPT : Update MerchantStructure
+    UI_PPT -> MerchantOnBoardData : POST updated MerchantStructure
+    database MerchantOnBoardDataDB
+    MerchantOnBoardData -> MerchantOnBoardDataDB : SAVE updated MerchantStructure
+    MerchantOnBoardDataDB --> MerchantOnBoardData : SAVED successful
+    MerchantOnBoardData --> UI_PPT : SAVED successful message displayed
+    database MCCIDDB #red
+    note right: Should it be a DB/Service/or both? 
+    UI_PPT -->  MCCIDDB: Retreive MCCID Code by Name with Filters.
+    note right: MCCID Finder Filter action.
+    MCCIDDB --> UI_PPT: returns List of MCCID's to UI
+    UI_PPT --> UI_PPT: update List on UI
+
+
+end
+
+alt successful case
+
+else some kind of failure
+
+	
+	group My own label
+	
+	    loop 1000 times
+	
+	    end
+	
+	end
+	
+else Another type of failure
+
+   
+   
+end
+@enduml
